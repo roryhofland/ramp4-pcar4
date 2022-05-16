@@ -373,6 +373,8 @@ function createApp(element: HTMLElement, iApi: InstanceAPI) {
         })
         .use(mixin);
 
+    vueElement.provide('iApi', iApi);
+
     vueElement.directive('focus-container', FocusContainer);
     vueElement.directive('focus-list', FocusList);
     vueElement.directive('focus-item', FocusItem);
