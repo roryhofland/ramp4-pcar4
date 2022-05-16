@@ -34,7 +34,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import type { InstanceAPI } from '@/api';
+import {
+    defineComponent,
+    ref,
+    inject,
+    onMounted,
+    onBeforeUnmount,
+    nextTick
+} from 'vue';
 
 export default defineComponent({
     name: 'KeyboardInstructionsModalV',
@@ -46,41 +54,102 @@ export default defineComponent({
         };
     },
 
-    mounted() {
-        this.handlers.push(
-            this.$iApi.event.on('openKeyboardInstructions', () => {
-                this.open = true;
-                this.$nextTick(() => {
-                    (this.$refs.firstEl as HTMLElement)?.focus();
-                });
-            })
-        );
-    },
+    setup() {
+        const open = ref<boolean>(false);
+        const instructionSections = ref<string[]>(['app', 'lists', 'map']);
+        const handlers = ref<Array<string>>([]);
+        const firstEl = ref();
+        const lastEl = ref();
+        const iApi = inject('iApi') as InstanceAPI;
 
-    beforeUnmount() {
-        this.handlers.forEach(handler => this.$iApi.event.off(handler));
-    },
+        onMounted(() => {
+            handlers.value.push(
+                iApi.event.on('openKeyboardInstructions', () => {
+                    open.value = true;
+                    nextTick(() => {
+                        (firstEl.value as HTMLElement)?.focus();
+                    });
+                })
+            );
+        });
 
-    methods: {
-        onKeydown(event: KeyboardEvent) {
+        onBeforeUnmount(() => {
+            handlers.value.forEach(handler => iApi.event.off(handler));
+        });
+
+        const onKeydown = (event: KeyboardEvent) => {
             if (event.key === 'Tab') {
-                if (event.shiftKey && event.target === this.$refs.firstEl) {
+                if (event.shiftKey && event.target === firstEl.value) {
                     event.preventDefault();
-                    (this.$refs.lastEl as HTMLElement).focus();
-                } else if (
-                    !event.shiftKey &&
-                    event.target == this.$refs.lastEl
-                ) {
+                    (lastEl.value as HTMLElement).focus();
+                } else if (!event.shiftKey && event.target == lastEl.value) {
                     event.preventDefault();
-                    (this.$refs.firstEl as HTMLElement).focus();
+                    (firstEl.value as HTMLElement).focus();
                 }
             } else if (event.key === 'Escape') {
                 event.preventDefault();
-                this.open = false;
+                open.value = false;
             }
-        }
+        };
+
+        return {
+            open,
+            instructionSections,
+            handlers,
+            firstEl,
+            lastEl,
+            onKeydown
+        };
     }
 });
+
+// PREVIOUS OPTIONS API FOR REFERENCE
+
+// export default defineComponent({
+//     name: 'KeyboardInstructionsModalV',
+//     data() {
+//         return {
+//             open: false,
+//             instructionSections: ['app', 'lists', 'map'],
+//             handlers: [] as Array<string>
+//         };
+//     },
+
+//     mounted() {
+//         this.handlers.push(
+//             this.$iApi.event.on('openKeyboardInstructions', () => {
+//                 this.open = true;
+//                 this.$nextTick(() => {
+//                     (this.$refs.firstEl as HTMLElement)?.focus();
+//                 });
+//             })
+//         );
+//     },
+
+//     beforeUnmount() {
+//         this.handlers.forEach(handler => this.$iApi.event.off(handler));
+//     },
+
+//     methods: {
+//         onKeydown(event: KeyboardEvent) {
+//             if (event.key === 'Tab') {
+//                 if (event.shiftKey && event.target === this.$refs.firstEl) {
+//                     event.preventDefault();
+//                     (this.$refs.lastEl as HTMLElement).focus();
+//                 } else if (
+//                     !event.shiftKey &&
+//                     event.target == this.$refs.lastEl
+//                 ) {
+//                     event.preventDefault();
+//                     (this.$refs.firstEl as HTMLElement).focus();
+//                 }
+//             } else if (event.key === 'Escape') {
+//                 event.preventDefault();
+//                 this.open = false;
+//             }
+//         }
+//     }
+// });
 </script>
 
 <style lang="scss" scoped></style>
