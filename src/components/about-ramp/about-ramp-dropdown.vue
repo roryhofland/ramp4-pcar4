@@ -66,48 +66,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import DropdownMenuV from '@/components/controls/dropdown-menu.vue';
 import RAMP from '@/api';
 
 export default defineComponent({
     name: 'AboutRampDropdownV',
-
     props: {
         position: {
             type: String,
             default: 'top-start'
         }
     },
-
     components: {
         'dropdown-menu': DropdownMenuV
     },
-
-    computed: {
+    setup() {
         /**
          * Get RAMP's version string
          */
-        versionString(): string {
+        const versionString = computed(() => {
             return `${RAMP.version.major}.${RAMP.version.minor}.${RAMP.version.patch}`;
-        },
+        });
 
         /**
          * Get RAMP build version hash
          */
-        versionHash(): string {
+        const versionHash = computed(() => {
             return RAMP.version.hash.slice(0, 9);
-        },
+        });
 
         /**
          * Get RAMP build date
          */
-        buildDate(): string {
+        const buildDate = computed(() => {
             let timestamp = new Date(RAMP.version.timestamp);
             return `${timestamp.getFullYear()}-${
                 timestamp.getMonth() + 1
             }-${timestamp.getDate()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`;
-        }
+        });
+
+        return { versionString, versionHash, buildDate };
     }
 });
 </script>
