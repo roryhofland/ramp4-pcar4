@@ -373,8 +373,6 @@ function createApp(element: HTMLElement, iApi: InstanceAPI) {
         })
         .use(mixin);
 
-    vueElement.provide('iApi', iApi);
-
     vueElement.directive('focus-container', FocusContainer);
     vueElement.directive('focus-list', FocusList);
     vueElement.directive('focus-item', FocusItem);
@@ -401,6 +399,9 @@ function createApp(element: HTMLElement, iApi: InstanceAPI) {
     // Add the $store and $iApi instances to the Vue components.
     vueElement.config.globalProperties.$store = store;
     vueElement.config.globalProperties.$iApi = iApi;
+
+    // Add the iApi instance to Vue component with provide/inject
+    vueElement.provide('iApi', iApi);
 
     const app = vueElement.mount(element);
 
