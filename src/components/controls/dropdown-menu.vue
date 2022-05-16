@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @focusout="closeDropdown">
         <button
             class="text-gray-500 hover:text-black dropdown-button"
             @click="open = !open"
@@ -16,7 +16,6 @@
         </button>
         <div
             v-show="open"
-            @blur="open = false"
             class="rv-dropdown shadow-md border border-gray:200 py-8 bg-white rounded z-10"
             :class="{ 'text-center': centered }"
             ref="dropdown"
@@ -104,8 +103,10 @@ export default defineComponent({
     },
 
     methods: {
-        closeDropdown() {
-            this.open = false;
+        closeDropdown(e: Event) {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                this.open = false;
+            }
         }
     }
 });
@@ -114,7 +115,6 @@ export default defineComponent({
 <style lang="scss">
 .rv-dropdown > * {
     display: block;
-    padding: 0.5rem 1rem 0.5rem 1rem;
     color: #2d3748;
 }
 .rv-dropdown > *:hover:not(.disabled) {
