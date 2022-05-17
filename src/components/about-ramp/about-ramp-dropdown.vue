@@ -85,21 +85,21 @@ export default defineComponent({
         /**
          * Get RAMP's version string
          */
-        versionString(): string {
+        const versionString = computed<string>(() => {
             return `${version.major}.${version.minor}.${version.patch}`;
-        },
+        });
 
         /**
          * Get RAMP build version hash
          */
-        versionHash(): string {
+        const versionHash = computed<string>(() => {
             return version.hash.slice(0, 9);
-        },
+        });
 
         /**
          * Get RAMP build date
          */
-        buildDate(): string {
+        const buildDate = computed<string>(() => {
             let timestamp = new Date(version.timestamp);
             if (isNaN(<any>timestamp)) {
                 // this appears to be broken in dev serve mode (but not always).
@@ -119,7 +119,7 @@ export default defineComponent({
                     timestamp.getMinutes()
                 )}:${padZero(timestamp.getSeconds())}`;
             }
-        }
+        });
     }
 });
 </script>
