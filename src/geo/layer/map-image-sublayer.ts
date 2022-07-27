@@ -1,9 +1,4 @@
-import {
-    AttribLayer,
-    GlobalEvents,
-    InstanceAPI,
-    type MapImageLayer
-} from '@/api/internal';
+import { AttribLayer, InstanceAPI, type MapImageLayer } from '@/api/internal';
 import { DataFormat, InitiationState, LayerFormat, LayerType } from '@/geo/api';
 import type { RampLayerConfig } from '@/geo/api';
 import { markRaw } from 'vue';

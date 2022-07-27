@@ -314,8 +314,12 @@ export class MapImageLayer extends AttribLayer {
                     // apply any updates that were in the configuration snippets
                     const subC = subConfigs[miSL.layerIdx];
                     if (subC) {
-                        miSL.visibility = subC.state?.visibility || true;
-                        miSL.opacity = subC.state?.opacity || 1;
+                        miSL.visibility =
+                            subC.state?.visibility ??
+                            !!this.origRampConfig.state?.visibility;
+                        miSL.opacity =
+                            subC.state?.opacity ??
+                            this.origRampConfig.state?.opacity!;
                         // miSL.setQueryable(subC.state.identify); // TODO uncomment when done
                         miSL.nameField = subC.nameField || miSL.nameField || '';
                         miSL.processFieldMetadata(subC.fieldMetadata);
