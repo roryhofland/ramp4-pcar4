@@ -999,10 +999,12 @@ export class EventAPI extends APIScope {
             case DefEH.MOUSE_MOVE_MAPTIP_CHECK:
                 // update any maptip state when the mouse moves over the map
                 zeHandler = (mapMove: MapMove) => {
-                    this.$iApi.geo.map.maptip.checkAtCoord({
-                        screenX: mapMove.screenX,
-                        screenY: mapMove.screenY
-                    });
+                    if (mapMove.input !== 'touch') {
+                        this.$iApi.geo.map.maptip.checkAtCoord({
+                            screenX: mapMove.screenX,
+                            screenY: mapMove.screenY
+                        });
+                    }
                 };
                 this.$iApi.event.on(
                     GlobalEvents.MAP_MOUSEMOVE,

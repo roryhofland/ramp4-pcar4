@@ -310,6 +310,7 @@ export interface MapMove {
     screenX: number;
     screenY: number;
     button: number;
+    input: string;
     moveTime: number;
 }
 

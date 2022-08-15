@@ -85,6 +85,7 @@ export class GeometryAPI {
             screenX: esriMapMove.x,
             screenY: esriMapMove.y,
             button: esriMapMove.button,
+            input: esriMapMove.native.input,
             moveTime: esriMapMove.timestamp
         };
     }
