@@ -13,17 +13,15 @@
     </mapnav-button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import type { InstanceAPI } from '@/api';
+import { inject } from 'vue';
 
-export default defineComponent({
-    name: 'LegendNavButtonV',
-    methods: {
-        togglePanel() {
-            this.$iApi.panel.toggle('legend');
-        }
-    }
-});
+const iApi = inject('iApi') as InstanceAPI;
+
+const togglePanel = () => {
+    iApi.panel.toggle('legend');
+};
 </script>
 
 <style lang="scss" scoped></style>

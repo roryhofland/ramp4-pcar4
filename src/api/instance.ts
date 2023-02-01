@@ -595,6 +595,9 @@ function createApp(element: HTMLElement, iApi: InstanceAPI) {
     vueElement.config.globalProperties.$store = thisStore;
     vueElement.config.globalProperties.$iApi = iApi;
 
+    vueElement.provide('iApi', iApi);
+    vueElement.provide('store', thisStore);
+
     const app = vueElement.mount(element);
 
     return { element: vueElement, app };

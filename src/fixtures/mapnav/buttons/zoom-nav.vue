@@ -27,24 +27,16 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import type { InstanceAPI } from '@/api';
 import { throttle } from 'throttle-debounce';
-import DividerNavV from './divider-nav.vue';
+import { inject } from 'vue';
+import DividerNav from './divider-nav.vue';
 
-export default defineComponent({
-    name: 'ZoomNavV',
-    components: {
-        'divider-nav': DividerNavV
-    },
+const iApi = inject('iApi') as InstanceAPI;
 
-    data() {
-        return {
-            zoomIn: throttle(400, true, () => this.$iApi.geo.map.zoomIn()),
-            zoomOut: throttle(400, true, () => this.$iApi.geo.map.zoomOut())
-        };
-    }
-});
+const zoomIn = throttle(400, true, () => iApi.geo.map.zoomIn());
+const zoomOut = throttle(400, true, () => iApi.geo.map.zoomOut());
 </script>
 
 <style lang="scss" scoped></style>

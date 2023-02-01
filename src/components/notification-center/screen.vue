@@ -42,34 +42,24 @@
     </panel-screen>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
-import type { PropType } from 'vue';
-
+<script setup lang="ts">
+import { computed, type PropType } from 'vue';
+import { useStore } from 'vuex';
 import type { PanelInstance } from '@/api';
+import notificationList from './notification-list.vue';
 
-export default defineComponent({
-    name: 'NotificationsScreenV',
-    props: {
-        panel: {
-            type: Object as PropType<PanelInstance>,
-            required: true
-        }
-    },
-
-    components: {
-        'notification-list': defineAsyncComponent(
-            () => import('./notification-list.vue')
-        )
-    },
-
-    data() {
-        return {
-            number: this.get('notification/notificationNumber'),
-            clearAll: this.call('notification/clearAll')
-        };
+defineProps({
+    panel: {
+        type: Object as PropType<PanelInstance>,
+        required: true
     }
 });
+
+const store = useStore();
+
+const number = computed(() => store.get('notification/notificationNumber'));
+
+const clearAll = () => store.dispatch('notification/clearAll');
 </script>
 
 <style lang="scss"></style>

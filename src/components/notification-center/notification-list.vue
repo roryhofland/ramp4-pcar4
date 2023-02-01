@@ -33,23 +33,16 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import NotificationItem from './notification-item.vue';
 
-import NotificationItemV from './notification-item.vue';
+const store = useStore();
 
-export default defineComponent({
-    name: 'NotificationListV',
-    components: {
-        'notification-item': NotificationItemV
-    },
-
-    data() {
-        return {
-            notificationStack: this.get('notification/notificationStack')
-        };
-    }
-});
+const notificationStack = computed(() =>
+    store.get<any>('notification/notificationStack')
+);
 </script>
 
 <style lang="scss" scoped></style>

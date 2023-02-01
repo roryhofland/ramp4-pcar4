@@ -19,16 +19,11 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-    name: 'WizardFormFooterV',
-    props: {
-        disabled: {
-            type: Boolean,
-            default: true
-        }
+<script setup lang="ts">
+defineProps({
+    disabled: {
+        type: Boolean,
+        default: true
     }
 });
 </script>

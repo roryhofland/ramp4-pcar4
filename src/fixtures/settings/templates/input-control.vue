@@ -19,48 +19,41 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import config from '@arcgis/core/config';
+import { onBeforeUnmount, reactive, ref, watch } from 'vue';
 
-export default defineComponent({
-    name: 'SliderControl',
-    props: {
-        config: {
-            type: Object,
-            required: true
-        },
-        name: {
-            type: String,
-            required: true
-        },
-        icon: {
-            type: String,
-            required: true
-        }
+const props = defineProps({
+    config: {
+        type: Object,
+        required: true
     },
-    created() {
-        this.watchers.push(
-            // watch the config for changes to the disabled value
-            this.$watch(
-                'config',
-                (newConfig: any) => {
-                    this.isDisabled = !!newConfig.disabled;
-                },
-                { deep: true }
-            )
-        );
+    name: {
+        type: String,
+        required: true
     },
-
-    beforeUnmount() {
-        this.watchers.forEach(unwatch => unwatch());
-    },
-
-    data() {
-        return {
-            isDisabled: !!this.config.disabled,
-            watchers: [] as Array<Function>
-        };
+    icon: {
+        type: String,
+        required: true
     }
+});
+
+const isDisabled = ref(!!props.config.disabled);
+const watchers = reactive<Array<Function>>([]);
+
+watchers.push(
+    // watch the config for changes to the opacity value
+    watch(
+        () => props.config,
+        (newConfig: any) => {
+            isDisabled.value = !!newConfig.disabled;
+        },
+        { deep: true }
+    )
+);
+
+onBeforeUnmount(() => {
+    watchers.forEach(unwatch => unwatch());
 });
 </script>
 

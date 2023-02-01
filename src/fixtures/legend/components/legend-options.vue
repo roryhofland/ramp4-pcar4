@@ -5,7 +5,7 @@
             position="bottom-end"
             :tooltip="$t('legend.layer.options')"
             tooltip-placement="left"
-            ref="dropdown-menu"
+            ref="dropdown"
         >
             <template #header>
                 <div class="flex p-4">
@@ -166,139 +166,118 @@
     </div>
 </template>
 
-<script lang="ts">
-import { GlobalEvents } from '@/api';
+<script setup lang="ts">
+import { GlobalEvents, InstanceAPI } from '@/api';
 import { LayerControl } from '@/geo/api';
-import { defineComponent, toRaw } from 'vue';
+import { inject, ref, toRaw } from 'vue';
 import { LayerItem } from '../store/layer-item';
 
-export default defineComponent({
-    name: 'LegendOptionsV',
-    props: {
-        legendItem: LayerItem
-    },
-    data() {
-        return {
-            LayerControl
-        };
-    },
-    methods: {
-        /**
-         * Display symbology stack for the layer.
-         */
-        toggleSymbology(): void {
-            if (
-                this.legendItem!.layerControlAvailable(LayerControl.Symbology)
-            ) {
-                this.legendItem!.toggleSymbology();
-            }
-        },
+const iApi = inject('iApi') as InstanceAPI;
+const dropdown = ref();
 
-        /**
-         * Toggles data table panel to open/close for the LegendItem.
-         */
-        toggleGrid() {
-            if (
-                this.legendItem!.layerControlAvailable(
-                    LayerControl.Datatable
-                ) &&
-                this.getFixtureExists('grid')
-            ) {
-                this.$iApi.event.emit(
-                    GlobalEvents.GRID_TOGGLE,
-                    this.legendItem!.layer
-                );
-            }
-        },
+const props = defineProps({
+    legendItem: LayerItem
+});
 
-        /**
-         * Toggles settings panel to open/close type for the LegendItem.
-         */
-        toggleSettings() {
-            if (
-                this.legendItem!.layerControlAvailable(LayerControl.Settings) &&
-                this.getFixtureExists('settings')
-            ) {
-                this.$iApi.event.emit(
-                    GlobalEvents.SETTINGS_TOGGLE,
-                    this.legendItem!.layer
-                );
-            }
-        },
+/**
+ * Display symbology stack for the layer.
+ */
+const toggleSymbology = (): void => {
+    if (props.legendItem!.layerControlAvailable(LayerControl.Symbology)) {
+        props.legendItem!.toggleSymbology();
+    }
+};
 
-        /**
-         * Toggles metadata panel to open/close for the LegendItem.
-         */
-        toggleMetadata() {
-            if (
-                this.legendItem!.layerControlAvailable(LayerControl.Metadata) &&
-                this.getFixtureExists('metadata')
-            ) {
-                const metaConfig =
-                    this.legendItem?.layer?.config.metadata ||
-                    this.legendItem?.layer?.parentLayer?.config?.metadata ||
-                    {};
-                const name =
-                    metaConfig?.name || this.legendItem?.layer?.name || '';
+/**
+ * Toggles data table panel to open/close for the LegendItem.
+ */
+const toggleGrid = () => {
+    if (
+        props.legendItem!.layerControlAvailable(LayerControl.Datatable) &&
+        getFixtureExists('grid')
+    ) {
+        iApi.event.emit(GlobalEvents.GRID_TOGGLE, props.legendItem!.layer);
+    }
+};
 
-                if (metaConfig.url) {
-                    // TODO: toggle metadata panel through API/store call
-                    this.$iApi.event.emit(GlobalEvents.METADATA_TOGGLE, {
-                        type: 'html',
-                        layerName: name,
-                        url: metaConfig.url,
-                        layer: this.legendItem!.layer
-                    });
-                } else {
-                    console.warn('Layer does not have a metadata url defined');
-                }
-            }
-        },
+/**
+ * Toggles settings panel to open/close type for the LegendItem.
+ */
+const toggleSettings = () => {
+    if (
+        props.legendItem!.layerControlAvailable(LayerControl.Settings) &&
+        getFixtureExists('settings')
+    ) {
+        iApi.event.emit(GlobalEvents.SETTINGS_TOGGLE, props.legendItem!.layer);
+    }
+};
 
-        /**
-         * Zoom to the boundary of layer
-         */
-        zoomToLayerBoundary() {
-            if (
-                this.legendItem!.layerControlAvailable(
-                    LayerControl.BoundaryZoom
-                )
-            ) {
-                this.legendItem?.layer?.zoomToLayerBoundary();
-            }
-        },
+/**
+ * Toggles metadata panel to open/close for the LegendItem.
+ */
+const toggleMetadata = () => {
+    if (
+        props.legendItem!.layerControlAvailable(LayerControl.Metadata) &&
+        getFixtureExists('metadata')
+    ) {
+        const metaConfig =
+            props.legendItem?.layer?.config.metadata ||
+            props.legendItem?.layer?.parentLayer?.config?.metadata ||
+            {};
+        const name = metaConfig?.name || props.legendItem?.layer?.name || '';
 
-        /**
-         * Removes layer from map.
-         */
-        removeLayer() {
-            if (this.legendItem!.layerControlAvailable(LayerControl.Remove)) {
-                this.$iApi.geo.map.removeLayer(this.legendItem!.layerUid!);
-            }
-        },
-
-        /**
-         * Reloads a layer on the map.
-         */
-        reloadLayer() {
-            if (this.legendItem!.layerControlAvailable(LayerControl.Reload)) {
-                toRaw(this.legendItem!.layer!).reload();
-                this.$refs['dropdown-menu'].open = false;
-            }
-        },
-
-        /**
-         * Indicates if the fixture with the given name has been added
-         */
-        getFixtureExists(fixtureName: string): boolean {
-            try {
-                return !!this.$iApi.fixture.get(fixtureName);
-            } catch (e) {
-                return false;
-            }
+        if (metaConfig.url) {
+            // TODO: toggle metadata panel through API/store call
+            iApi.event.emit(GlobalEvents.METADATA_TOGGLE, {
+                type: 'html',
+                layerName: name,
+                url: metaConfig.url,
+                layer: props.legendItem!.layer
+            });
+        } else {
+            console.warn('Layer does not have a metadata url defined');
         }
     }
-});
+};
+
+/**
+ * Zoom to the boundary of layer
+ */
+const zoomToLayerBoundary = () => {
+    if (props.legendItem!.layerControlAvailable(LayerControl.BoundaryZoom)) {
+        props.legendItem?.layer?.zoomToLayerBoundary();
+    }
+};
+
+/**
+ * Removes layer from map.
+ */
+const removeLayer = () => {
+    if (props.legendItem!.layerControlAvailable(LayerControl.Remove)) {
+        iApi.geo.map.removeLayer(props.legendItem!.layerUid!);
+    }
+};
+
+/**
+ * Reloads a layer on the map.
+ */
+const reloadLayer = () => {
+    if (props.legendItem!.layerControlAvailable(LayerControl.Reload)) {
+        toRaw(props.legendItem!.layer!).reload();
+        dropdown.value.open = false;
+    }
+};
+
+/**
+ * Indicates if the fixture with the given name has been added
+ */
+const getFixtureExists = (fixtureName: string): boolean => {
+    try {
+        return !!iApi.fixture.get(fixtureName);
+    } catch (e) {
+        return false;
+    }
+};
 </script>
 
 <style lang="scss" scoped>

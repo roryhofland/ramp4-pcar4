@@ -62,40 +62,35 @@
     </li>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
+<script setup lang="ts">
+import { reactive, ref } from 'vue';
+import { useStore } from 'vuex';
 import { NotificationType } from '@/api/notifications';
 
-export default defineComponent({
-    name: 'NotificationListV',
-    props: {
-        notification: {
-            type: Object,
-            required: true
-        }
-    },
+const store = useStore();
 
-    data() {
-        return {
-            removeNotification: this.call('notification/removeNotification'),
-            open: false,
-            icons: {
-                [NotificationType.WARNING]: '⚠',
-                [NotificationType.INFO]: '☑',
-                [NotificationType.ERROR]: '❌'
-            }
-        };
-    },
-
-    methods: {
-        tooltipShow() {
-            if (!this.notification.messageList) {
-                return false;
-            }
-        }
+const props = defineProps({
+    notification: {
+        type: Object,
+        required: true
     }
 });
+
+const open = ref(false);
+const icons = reactive({
+    [NotificationType.WARNING]: '⚠',
+    [NotificationType.INFO]: '☑',
+    [NotificationType.ERROR]: '❌'
+});
+
+const removeNotification = (notif: any) => {
+    store.set('notification/removeNotification!', notif);
+};
+const tooltipShow = () => {
+    if (!props.notification.messageList) {
+        return false;
+    }
+};
 </script>
 
 <style lang="scss">

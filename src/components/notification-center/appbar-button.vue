@@ -23,23 +23,19 @@
     </appbar-button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import type { InstanceAPI } from '@/api';
+import { inject, computed } from 'vue';
+import { useStore } from 'vuex';
 
-export default defineComponent({
-    name: 'NotificationsAppbarButtonV',
-    data() {
-        return {
-            number: this.get('notification/notificationNumber')
-        };
-    },
+const store = useStore();
+const iApi = inject('iApi') as InstanceAPI;
 
-    methods: {
-        onClick() {
-            this.$iApi.panel.toggle('notifications');
-        }
-    }
-});
+const number = computed(() => store.get('notification/notificationNumber'));
+
+const onClick = () => {
+    iApi.panel.toggle('notifications');
+};
 </script>
 
 <style lang="scss" scoped>

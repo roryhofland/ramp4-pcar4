@@ -24,17 +24,13 @@
     </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
-export default defineComponent({
-    name: 'NotificationsFloatingButtonV',
-    data() {
-        return {
-            number: this.get('notification/notificationNumber')
-        };
-    }
-});
+const store = useStore();
+
+const number = computed(() => store.get('notification/notificationNumber'));
 </script>
 
 <style lang="scss" scoped>

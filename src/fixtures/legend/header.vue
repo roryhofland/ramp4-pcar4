@@ -105,50 +105,46 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
+<script setup lang="ts">
+import { computed, inject } from 'vue';
 import { LegendStore } from './store';
-import { GlobalEvents } from '../../api/internal';
+import { GlobalEvents, InstanceAPI } from '../../api/internal';
 import type { LegendAPI } from './api/legend';
+import { useStore } from 'vuex';
 
-export default defineComponent({
-    name: 'LegendHeaderV',
-    data() {
-        return {
-            legendApi: this.$iApi.fixture.get<LegendAPI>('legend')!
-        };
-    },
+const store = useStore();
+const iApi = inject('iApi') as InstanceAPI;
 
-    methods: {
-        toggleWizard() {
-            this.$iApi.event.emit(GlobalEvents.WIZARD_TOGGLE);
-        },
-        getWizardExists(): boolean {
-            try {
-                return !!this.$iApi.fixture.get('wizard');
-            } catch (e) {
-                return false;
-            }
-        },
-        toggleLayerReorder() {
-            this.$iApi.event.emit(GlobalEvents.REORDER_TOGGLE);
-        },
-        getLayerReorderExists(): boolean {
-            try {
-                return !!this.$iApi.fixture.get('layer-reorder');
-            } catch (e) {
-                return false;
-            }
-        },
-        isControlAvailable(control: string): boolean {
-            const hc: Array<string> | undefined = this.$store.get(
-                LegendStore.headerControls
-            );
-            return hc!.includes(control);
-        }
+const legendApi = computed(() => iApi.fixture.get<LegendAPI>('legend')!);
+
+const toggleWizard = () => {
+    iApi.event.emit(GlobalEvents.WIZARD_TOGGLE);
+};
+
+const getWizardExists = (): boolean => {
+    try {
+        return !!iApi.fixture.get('wizard');
+    } catch (e) {
+        return false;
     }
-});
+};
+
+const toggleLayerReorder = () => {
+    iApi.event.emit(GlobalEvents.REORDER_TOGGLE);
+};
+
+const getLayerReorderExists = (): boolean => {
+    try {
+        return !!iApi.fixture.get('layer-reorder');
+    } catch (e) {
+        return false;
+    }
+};
+
+const isControlAvailable = (control: string): boolean => {
+    const hc: Array<string> | undefined = store.get(LegendStore.headerControls);
+    return hc!.includes(control);
+};
 </script>
 
 <style lang="scss" scoped>

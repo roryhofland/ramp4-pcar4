@@ -28,17 +28,15 @@
     </mapnav-button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import type { InstanceAPI } from '@/api';
+import { inject } from 'vue';
 
-export default defineComponent({
-    name: 'FullscreenNavV',
-    methods: {
-        onClick() {
-            this.$iApi.toggleFullscreen();
-        }
-    }
-});
+const iApi = inject('iApi') as InstanceAPI;
+
+const onClick = () => {
+    iApi.toggleFullscreen();
+};
 </script>
 
 <style lang="scss" scoped></style>
