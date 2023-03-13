@@ -1,6 +1,5 @@
 import { markRaw } from 'vue';
 import { MetadataAPI } from './api/metadata';
-import { metadata } from './store/index';
 import MetadataScreenV from './screen.vue';
 
 import messages from './lang/lang.csv?raw';
@@ -27,8 +26,6 @@ class MetadataFixture extends MetadataAPI {
             { i18n: { messages } }
         );
 
-        this.$vApp.$store.registerModule('metadata', metadata());
-
         this.removed = () => {
             // console.log(`[fixture] ${this.id} removed`);
             if (this.$iApi.fixture.get('appbar')) {
@@ -39,7 +36,6 @@ class MetadataFixture extends MetadataAPI {
             }
 
             this.$iApi.panel.remove('metadata');
-            this.$vApp.$store.unregisterModule('metadata');
         };
     }
 }

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type { OverviewmapState } from './overviewmap-state';
 
-export const useOverviewmapStore = defineStore('overview-map', {
+export const useOverviewmapStore = defineStore('overviewmap', {
     state: (): OverviewmapState => ({
         mapConfig: undefined,
         basemaps: {},
