@@ -1,4 +1,5 @@
 import { createApp as createRampApp } from 'vue';
+import { createPinia } from 'pinia';
 import type {
     ComponentPublicInstance,
     App as VueApp,
@@ -557,6 +558,7 @@ function createApp(element: HTMLElement, iApi: InstanceAPI) {
     // passing the `iApi` reference to the root Vue component will propagate it to all the child component in this instance of R4MP Vue application
     // if several R4MP apps are created, each will contain a reference of its own API instance
     const thisStore = store();
+    const pinia = createPinia();
     const thisi18n = i18n();
     const vueElement = createRampApp(App)
         .use(thisStore)
@@ -566,7 +568,8 @@ function createApp(element: HTMLElement, iApi: InstanceAPI) {
             component: 'tippy' // => <tippy/>
         })
         .use(mixin)
-        .use(pathifyHelper);
+        .use(pathifyHelper)
+        .use(pinia);
 
     vueElement.directive('focus-container', FocusContainer);
     vueElement.directive('focus-list', FocusList);

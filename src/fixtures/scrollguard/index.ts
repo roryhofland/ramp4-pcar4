@@ -1,7 +1,6 @@
 import messages from './lang/lang.csv?raw';
 import ScrollguardV from './map-scrollguard.vue';
 import { ScrollguardAPI } from './api/scrollguard';
-import { scrollguard } from './store';
 import type { ScrollguardConfig } from './store';
 
 class ScrollguardFixture extends ScrollguardAPI {
@@ -11,8 +10,6 @@ class ScrollguardFixture extends ScrollguardAPI {
         Object.entries(messages).forEach(value =>
             (<any>this.$iApi.$i18n).mergeLocaleMessage(...value)
         );
-
-        this.$vApp.$store.registerModule('scrollguard', scrollguard());
 
         this._parseConfig(this.config);
         const unwatch = this.$vApp.$watch(
@@ -32,7 +29,6 @@ class ScrollguardFixture extends ScrollguardAPI {
         this.removed = () => {
             // console.log(`[fixture] ${this.id} removed`);
             unwatch();
-            this.$vApp.$store.unregisterModule('scrollguard');
             destroy();
         };
     }

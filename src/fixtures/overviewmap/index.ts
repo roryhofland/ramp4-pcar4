@@ -1,5 +1,4 @@
 import { OverviewmapAPI } from './api/overviewmap';
-import { overviewmap } from './store/index';
 import type { OverviewmapConfig } from './store/index';
 import OverviewmapV from './overviewmap.vue';
 import messages from './lang/lang.csv?raw';
@@ -7,8 +6,6 @@ import messages from './lang/lang.csv?raw';
 class OverviewmapFixture extends OverviewmapAPI {
     added() {
         // console.log(`[fixture] ${this.id} added`);
-
-        this.$vApp.$store.registerModule('overviewmap', overviewmap());
 
         Object.entries(messages).forEach(value =>
             (<any>this.$iApi.$i18n).mergeLocaleMessage(...value)
@@ -31,7 +28,6 @@ class OverviewmapFixture extends OverviewmapAPI {
         this.removed = () => {
             // console.log(`[fixture] ${this.id} removed`);
             unwatch();
-            this.$vApp.$store.unregisterModule('overviewmap');
             destroy();
         };
     }

@@ -63,24 +63,20 @@ import {
 
 import type { Extent, RampBasemapConfig, RampMapConfig } from '@/geo/api';
 import { GlobalEvents, InstanceAPI, OverviewMapAPI } from '@/api/internal';
-import { OverviewmapStore } from './store';
+import { useOverviewmapStore } from './store';
 import { ConfigStore } from '@/store/modules/config';
 import { debounce } from 'throttle-debounce';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 
-const store = useStore();
+const useOverviewmap = useOverviewmapStore();
 const { t } = useI18n();
 const iApi = inject('iApi') as InstanceAPI;
 const el = ref();
 
-const mapConfig = computed(() =>
-    store.get<RampMapConfig>(OverviewmapStore.mapConfig)
-);
-const basemaps = computed(() => store.get<any>(OverviewmapStore.basemaps));
-const startMinimized = computed(() =>
-    store.get<boolean>(OverviewmapStore.startMinimized)
-);
+const mapConfig = computed(() => useOverviewmap.mapConfig);
+const basemaps = computed(() => useOverviewmap.basemaps);
+const startMinimized = computed(() => useOverviewmap.startMinimized);
 let overviewMap = reactive(new OverviewMapAPI(iApi));
 const minimized = ref(true);
 const hoverOnExtent = ref(false);
@@ -222,10 +218,7 @@ const _adaptBasemap = () => {
 
         // override the intial basemap id in the overview map config
         if (!overviewMap.created) {
-            iApi.$vApp.$store.set(
-                OverviewmapStore.updateIntialBasemap,
-                basemap.id
-            );
+            useOverviewmap.updateIntialBasemap(basemap.id);
         }
 
         // set the basemap if the map has been created
@@ -245,10 +238,7 @@ const _adaptBasemap = () => {
 
         // override the intial basemap id in the overview map config
         if (!overviewMap.created) {
-            iApi.$vApp.$store.set(
-                OverviewmapStore.updateIntialBasemap,
-                currBm.id
-            );
+            useOverviewmap.updateIntialBasemap(currBm.id);
         }
 
         // set the basemap once the map loads
